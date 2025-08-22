@@ -1,6 +1,4 @@
-/* global plausible */
 import React, { useState, useEffect } from "react";
-import songsData from "./songs.json";
 import "./App.css";
 
 function App() {
@@ -16,8 +14,13 @@ function App() {
   );
 
   useEffect(() => {
-    const initialSongs = songsData.sort(() => 0.5 - Math.random()).slice(0, 5);
-    setSongs(initialSongs);
+    fetch("/songs.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const initialSongs = data.sort(() => 0.5 - Math.random()).slice(0, 5);
+        setSongs(initialSongs);
+      })
+      .catch((err) => console.error("Failed to load songs.json", err));
   }, []);
 
   useEffect(() => {
@@ -53,13 +56,17 @@ function App() {
   };
 
   const handlePlayAgain = () => {
-    const newSongs = songsData.sort(() => 0.5 - Math.random()).slice(0, 5);
-    setSongs(newSongs);
-    setCurrentIndex(0);
-    setGuess(1990);
-    setScore(0);
-    setGameOver(false);
-    setResults([]);
+    fetch("/songs.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const newSongs = data.sort(() => 0.5 - Math.random()).slice(0, 5);
+        setSongs(newSongs);
+        setCurrentIndex(0);
+        setGuess(1990);
+        setScore(0);
+        setGameOver(false);
+        setResults([]);
+      });
   };
 
   const getScoreClass = (score) => {
