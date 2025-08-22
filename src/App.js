@@ -258,44 +258,50 @@ function App() {
 
           {/* STICKY CONTROLS: slider + labels + submit button */}
           <div className="controls">
-            <label htmlFor="year-slider" className="visually-hidden">
-              Choose a year between {YEAR_MIN} and {YEAR_MAX}
-            </label>
+           <label htmlFor="year-slider" className="visually-hidden">
+  Choose a year between {YEAR_MIN} and {YEAR_MAX}
+</label>
 
-            <div className="year-thumb" aria-live="polite">
-              Your guess: {guess}
-            </div>
+<div className="year-thumb" aria-live="polite">
+  Your guess: {guess}
+</div>
 
-            <div className="range-wrapper">
-              <input
-                id="year-slider"
-                type="range"
-                min={YEAR_MIN}
-                max={YEAR_MAX}
-                step="1"
-                value={guess}
-                onChange={(e) => setGuess(parseInt(e.target.value, 10))}
-                list="year-ticks"
-                disabled={isSubmitting}
-              />
-              <datalist id="year-ticks">
-                {years.map((y) => (
-                  <option key={y} value={y} />
-                ))}
-              </datalist>
+<div className="range-shell">
+  <input
+    id="year-slider"
+    type="range"
+    min={YEAR_MIN}
+    max={YEAR_MAX}
+    step="1"
+    value={guess}
+    onChange={(e) => setGuess(parseInt(e.target.value, 10))}
+    disabled={isSubmitting}
+  />
 
-              <div className="year-labels" aria-hidden="true">
-                {years.map((y) => (
-                  <div className="year-label" key={y}>
-                    {y % 10 === 0 ? y : "|"}
-                  </div>
-                ))}
-              </div>
-            </div>
+  {/* subtle tick overlay for each year */}
+  <div className="range-track-overlay" aria-hidden="true" />
 
-            <button onClick={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting ? "Checking…" : "Submit Guess"}
-            </button>
+  {/* Precisely positioned labels (decades show numbers) */}
+  <div className="year-labels" aria-hidden="true">
+    {years.map((y) => {
+      const pos = ((y - YEAR_MIN) / (YEAR_MAX - YEAR_MIN)) * 100; // 0..100
+      const isDecade = y % 10 === 0;
+      return (
+        <div
+          key={y}
+          className={`year-label${isDecade ? " decade" : ""}`}
+          style={{ "--pos": `${pos}%` }}
+        >
+          {isDecade ? y : ""}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<button onClick={handleSubmit} disabled={isSubmitting}>
+  {isSubmitting ? "Checking…" : "Submit Guess"}
+</button>
           </div>
 
           {showFeedback && (
