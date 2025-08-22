@@ -96,13 +96,24 @@ img { max-width: 100%; display: block; }
   text-align: center;
 }
 
+/* Album cover — compact so slider fits without scrolling */
 .cover {
+  display: block;
+  max-width: 320px;     /* desktop cap */
+  max-height: 40vh;     /* don’t let it eat the viewport */
   width: 100%;
   height: auto;
+  margin: 0 auto 16px;  /* centre + spacing */
   border-radius: var(--radius-sm);
-  margin-bottom: 16px;
   object-fit: cover;
-  aspect-ratio: 1 / 1;   /* keeps covers nicely square */
+  aspect-ratio: 1 / 1;  /* keep square */
+}
+
+@media (max-width: 600px) {
+  .cover {
+    max-width: 85%;     /* larger on mobile */
+    max-height: 35vh;   /* slightly shorter to reveal slider */
+  }
 }
 
 /* Headings / text */
@@ -154,7 +165,7 @@ button:disabled {
 }
 
 /* =========================
-   Range (Year slider) — unified, no duplicates
+   Range (Year slider)
    ========================= */
 .range-wrapper {
   position: relative;
@@ -178,14 +189,14 @@ input[type="range"] {
   touch-action: pan-y;
 }
 
-/* WebKit track (for consistency) */
+/* WebKit track */
 input[type="range"]::-webkit-slider-runnable-track {
   height: 8px;
   background: #d3d3d3;
   border-radius: 4px;
 }
 
-/* Tick illusion (optional): subtle decade markers with gradient overlay */
+/* Tick illusion (52 years 1960–2012) */
 .range-wrapper::after {
   content: "";
   position: absolute;
@@ -214,7 +225,7 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--brand);
   border-radius: 50%;
   cursor: pointer;
-  margin-top: -9px; /* centers thumb on 8px track */
+  margin-top: -9px; /* center on 8px track */
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.25);
   position: relative;
@@ -239,7 +250,7 @@ input[type="range"]::-moz-range-track {
   border-radius: 4px;
 }
 
-/* Year labels under the slider */
+/* Year labels */
 .year-labels {
   display: flex;
   justify-content: space-between;
@@ -257,12 +268,28 @@ input[type="range"]::-moz-range-track {
 }
 
 /* =========================
+   Controls sticky (optional)
+   Wrap slider + labels + button in <div class="controls"> to enable
+   ========================= */
+.controls {
+  position: sticky;
+  bottom: 0;
+  padding-bottom: 8px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--card) 94%, transparent), var(--card));
+  z-index: 5;
+  /* subtle border on top to separate from content above */
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+/* =========================
    Feedback / Results
    ========================= */
 .answer-feedback {
   margin-top: 14px;
   padding: 10px 12px;
-  background: color-mix(in srgb, var(--brand) 12%, white);
+  background: color-mix(in srgb, var(--brand) 14%, var(--card)); /* better contrast */
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   display: inline-block;

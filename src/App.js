@@ -23,18 +23,14 @@ const coverCache = new Map();
       const obj = JSON.parse(raw);
       Object.entries(obj).forEach(([k, v]) => coverCache.set(k, v));
     }
-  } catch {
-    /* ignore */
-  }
+  } catch { /* ignore */ }
 })();
 function persistCoverCache() {
   const obj = {};
   coverCache.forEach((v, k) => (obj[k] = v));
   try {
     localStorage.setItem(COVER_CACHE_KEY, JSON.stringify(obj));
-  } catch {
-    /* ignore */
-  }
+  } catch { /* ignore */ }
 }
 
 async function fetchCoverAndPreview({ title, artist }) {
@@ -97,7 +93,7 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const timerRef = useRef(null);
 
-  // Precompute year ticks once
+  // Precompute years once
   const years = useMemo(
     () => Array.from({ length: YEAR_MAX - YEAR_MIN + 1 }, (_, i) => YEAR_MIN + i),
     []
@@ -176,7 +172,7 @@ function App() {
     const actualYear = parseInt(songs[currentIndex].year, 10);
     const diff = Math.abs(actualYear - guess);
     const songScore = Math.max(0, BASE_SCORE - diff * PENALTY_PER_YEAR);
-    const updatedScore = score + songScore; // compute now to avoid stale reads later
+    const updatedScore = score + songScore;
 
     const resultEntry = {
       title: songs[currentIndex].title,
@@ -195,9 +191,7 @@ function App() {
     try {
       const audio = document.querySelector("audio.preview-audio");
       if (audio) audio.pause();
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
 
     // Advance after a short delay
     timerRef.current = setTimeout(() => {
@@ -262,50 +256,53 @@ function App() {
               : "\u00A0"}
           </div>
 
-          <label htmlFor="year-slider" className="visually-hidden">
-            Choose a year between {YEAR_MIN} and {YEAR_MAX}
-          </label>
+          {/* STICKY CONTROLS: slider + labels + submit button */}
+          <div className="controls">
+            <label htmlFor="year-slider" className="visually-hidden">
+              Choose a year between {YEAR_MIN} and {YEAR_MAX}
+            </label>
 
-          <div className="year-thumb" aria-live="polite">
-            Your guess: {guess}
-          </div>
-
-          <div className="range-wrapper">
-            <input
-              id="year-slider"
-              type="range"
-              min={YEAR_MIN}
-              max={YEAR_MAX}
-              step="1"
-              value={guess}
-              onChange={(e) => setGuess(parseInt(e.target.value, 10))}
-              list="year-ticks"
-              disabled={isSubmitting}
-            />
-            <datalist id="year-ticks">
-              {years.map((y) => (
-                <option key={y} value={y} />
-              ))}
-            </datalist>
-
-            <div className="year-labels" aria-hidden="true">
-              {years.map((y) => (
-                <div className="year-label" key={y}>
-                  {y % 10 === 0 ? y : "|"}
-                </div>
-              ))}
+            <div className="year-thumb" aria-live="polite">
+              Your guess: {guess}
             </div>
-          </div>
 
-          <button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Checking…" : "Submit Guess"}
-          </button>
+            <div className="range-wrapper">
+              <input
+                id="year-slider"
+                type="range"
+                min={YEAR_MIN}
+                max={YEAR_MAX}
+                step="1"
+                value={guess}
+                onChange={(e) => setGuess(parseInt(e.target.value, 10))}
+                list="year-ticks"
+                disabled={isSubmitting}
+              />
+              <datalist id="year-ticks">
+                {years.map((y) => (
+                  <option key={y} value={y} />
+                ))}
+              </datalist>
+
+              <div className="year-labels" aria-hidden="true">
+                {years.map((y) => (
+                  <div className="year-label" key={y}>
+                    {y % 10 === 0 ? y : "|"}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? "Checking…" : "Submit Guess"}
+            </button>
+          </div>
 
           {showFeedback && (
             <div className="answer-feedback" aria-live="polite">
               🎯 Correct year: <strong>{songs[currentIndex].year}</strong>{" "}
-              ({Math.abs(guess - parseInt(songs[currentIndex].year, 10))} year
-              {Math.abs(guess - parseInt(songs[currentIndex].year, 10)) === 1 ? "" : "s"} off)
+              ({Math.abs(guess - parseInt(songs[currentIndex].year, 10))}{" "}
+              year{Math.abs(guess - parseInt(songs[currentIndex].year, 10)) === 1 ? "" : "s"} off)
             </div>
           )}
         </div>
@@ -335,9 +332,7 @@ function App() {
               <tbody>
                 {results.map((r, index) => (
                   <tr key={`${r.title}-${index}`}>
-                    <td>
-                      {r.title} – {r.artist}
-                    </td>
+                    <td>{r.title} – {r.artist}</td>
                     <td>{r.guessedYear}</td>
                     <td>{r.actualYear}</td>
                     <td>{r.diff}</td>
