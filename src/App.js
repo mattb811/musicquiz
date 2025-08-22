@@ -12,6 +12,7 @@ function App() {
   const [bestScore, setBestScore] = useState(
     parseInt(localStorage.getItem("bestScore")) || 0
   );
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     fetch("/songs.json")
@@ -43,16 +44,20 @@ function App() {
 
     setResults([...results, resultEntry]);
     setScore(updatedScore);
+    setShowFeedback(true);
 
-    if (currentIndex === songs.length - 1) {
-      setGameOver(true);
-      if (updatedScore > bestScore) {
-        setBestScore(updatedScore);
-        localStorage.setItem("bestScore", updatedScore.toString());
+    setTimeout(() => {
+      setShowFeedback(false);
+      if (currentIndex === songs.length - 1) {
+        setGameOver(true);
+        if (updatedScore > bestScore) {
+          setBestScore(updatedScore);
+          localStorage.setItem("bestScore", updatedScore.toString());
+        }
+      } else {
+        setCurrentIndex(currentIndex + 1);
       }
-    } else {
-      setCurrentIndex(currentIndex + 1);
-    }
+    }, 1500);
   };
 
   const handlePlayAgain = () => {
@@ -66,6 +71,7 @@ function App() {
         setScore(0);
         setGameOver(false);
         setResults([]);
+        setShowFeedback(false);
       });
   };
 
@@ -120,7 +126,7 @@ function App() {
 
           <button onClick={handleSubmit}>Submit Guess</button>
 
-          {results.length === currentIndex + 1 && (
+          {showFeedback && (
             <div className="answer-feedback">
               🎯 Correct year: <strong>{songs[currentIndex].year}</strong>
             </div>
