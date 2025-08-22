@@ -16,7 +16,8 @@ function App() {
   );
 
   useEffect(() => {
-    setSongs(songsData.sort(() => 0.5 - Math.random()).slice(0, 5));
+    const initialSongs = songsData.sort(() => 0.5 - Math.random()).slice(0, 5);
+    setSongs(initialSongs);
   }, []);
 
   useEffect(() => {
