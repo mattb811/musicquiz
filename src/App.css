@@ -2,8 +2,11 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: red; /* OBVIOUS BACKGROUND FOR DEBUG */
-  ...
+  color: #333;
+  margin: 0;
+  padding: 0;
 }
+
 
 
 .App {
