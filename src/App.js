@@ -91,33 +91,40 @@ function App() {
           <div className="year-thumb">Your guess: {guess}</div>
 
           <div className="range-wrapper">
-  <input
-    type="range"
-    min="1960"
-    max="2012"
-    step="1"
-    value={guess}
-    onChange={(e) => setGuess(parseInt(e.target.value))}
-    list="year-ticks"
-  />
-
-  <datalist id="year-ticks">
-    {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map((year) => (
-      <option key={year} value={year} />
-    ))}
-  </datalist>
-
-  <div className="year-labels">
-    {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map((year) => (
-      <div className="year-label" key={year}>
-        {year % 10 === 0 ? year : '|'}
-      </div>
-    ))}
-  </div>
-</div>
-
+            <input
+              type="range"
+              min="1960"
+              max="2012"
+              step="1"
+              value={guess}
+              onChange={(e) => setGuess(parseInt(e.target.value))}
+              list="year-ticks"
+            />
+            <datalist id="year-ticks">
+              {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map(
+                (year) => (
+                  <option key={year} value={year} />
+                )
+              )}
+            </datalist>
+            <div className="year-labels">
+              {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map(
+                (year) => (
+                  <div className="year-label" key={year}>
+                    {year % 10 === 0 ? year : "|"}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
 
           <button onClick={handleSubmit}>Submit Guess</button>
+
+          {results.length === currentIndex + 1 && (
+            <div className="answer-feedback">
+              🎯 Correct year: <strong>{songs[currentIndex].year}</strong>
+            </div>
+          )}
         </div>
       )}
 
