@@ -252,24 +252,21 @@ button:disabled {
 
 /* Labels container: same inner width */
 .year-labels {
-  position: absolute;
-  left: calc(var(--thumb) / 2);
-  right: calc(var(--thumb) / 2);
-  top: 12px;                /* a bit below the track */
-  height: 18px;
-  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #555;
   user-select: none;
+  pointer-events: none;
 }
 
 /* Each label positioned by percentage; centered on its tick */
 .year-label {
-  position: absolute;
-  left: calc(var(--pos) * 1%); /* --pos set inline from React (0..100) */
-  transform: translateX(-50%);
-  font-size: 11px;
-  line-height: 1;
-  color: #555;
-  white-space: nowrap;          /* add this */
+  text-align: center;
+  flex: 0 0 auto;
+  width: 1px;   /* makes spacing purely flex-based */
+  white-space: nowrap;
 }
 
 /* Small tick under every year label */

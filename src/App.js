@@ -283,21 +283,11 @@ function App() {
 
   {/* Precisely positioned labels (decades show numbers) */}
   <div className="year-labels" aria-hidden="true">
-    {years.map((y) => {
-      const pos = ((y - YEAR_MIN) / (YEAR_MAX - YEAR_MIN)) * 100; // 0..100
-      const isDecade = y % 10 === 0;
-      return (
-        <div
-          key={y}
-          className={`year-label${isDecade ? " decade" : ""}`}
-          style={{ "--pos": pos }}   // number only, no "%"
+  {years.filter((y) => y % 10 === 0).map((y) => (
+    <div key={y} className="year-label">{y}</div>
+  ))}
+</div>
 
-        >
-          {isDecade ? y : ""}
-        </div>
-      );
-    })}
-  </div>
 </div>
 
 <button onClick={handleSubmit} disabled={isSubmitting}>
