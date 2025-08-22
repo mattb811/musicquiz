@@ -270,6 +270,11 @@ button:disabled {
   color: #444;
 }
 
+.year-label:last-child {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
 /* Larger thumb on small screens → labels auto-align */
 @media (max-width: 520px) {
   .range-shell { --thumb: 30px; }

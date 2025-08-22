@@ -283,10 +283,13 @@ function App() {
 
   {/* Precisely positioned labels (decades show numbers) */}
   <div className="year-labels" aria-hidden="true">
-  {years.filter((y) => y % 10 === 0).map((y) => (
-    <div key={y} className="year-label">{y}</div>
-  ))}
+  {years
+    .filter((y) => y % 10 === 0 || y === YEAR_MAX) // include decades AND 2012
+    .map((y) => (
+      <div key={y} className="year-label">{y}</div>
+    ))}
 </div>
+
 
 </div>
 
