@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import "./App.css";
+
+const YEAR_MIN = 1960;
+const YEAR_MAX = 2012;
+const MAX_QUESTIONS = 5;
+const BASE_SCORE = 1000;
+const PENALTY_PER_YEAR = 50;
+const STORAGE_KEY = "bestScore";
 
 function App() {
   const [songs, setSongs] = useState([]);
@@ -10,29 +17,62 @@ function App() {
   const [results, setResults] = useState([]);
   const [coverUrl, setCoverUrl] = useState("/records.jpg");
   const [bestScore, setBestScore] = useState(
-    parseInt(localStorage.getItem("bestScore")) || 0
+    () => parseInt(localStorage.getItem(STORAGE_KEY), 10) || 0
   );
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const timerRef = useRef(null);
 
-  useEffect(() => {
+  // Precompute years once
+  const years = useMemo(
+    () => Array.from({ length: YEAR_MAX - YEAR_MIN + 1 }, (_, i) => YEAR_MIN + i),
+    []
+  );
+
+  // Load a new game
+  const loadSongs = () => {
     fetch("/songs.json")
       .then((res) => res.json())
       .then((data) => {
-        const initialSongs = data.sort(() => 0.5 - Math.random()).slice(0, 5);
-        setSongs(initialSongs);
+        // Shuffle (Fisher–Yates)
+        const arr = [...data];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        const initial = arr.slice(0, MAX_QUESTIONS);
+        setSongs(initial);
+        setCurrentIndex(0);
+        setGuess(1990);
+        setScore(0);
+        setGameOver(false);
+        setResults([]);
+        setShowFeedback(false);
+        setIsSubmitting(false);
       })
       .catch((err) => console.error("Failed to load songs.json", err));
-  }, []);
+  };
 
   useEffect(() => {
-    setCoverUrl("/records.jpg");
+    loadSongs();
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  // Cover art: prefer song cover if present, otherwise fallback
+  useEffect(() => {
+    const song = songs[currentIndex];
+    setCoverUrl(song?.coverUrl || "/records.jpg");
   }, [songs, currentIndex]);
 
   const handleSubmit = () => {
-    const actualYear = parseInt(songs[currentIndex].year);
+    if (isSubmitting || !songs[currentIndex]) return; // guard
+    setIsSubmitting(true);
+
+    const actualYear = parseInt(songs[currentIndex].year, 10);
     const diff = Math.abs(actualYear - guess);
-    const songScore = Math.max(0, 1000 - diff * 50);
-    const updatedScore = score + songScore;
+    const songScore = Math.max(0, BASE_SCORE - diff * PENALTY_PER_YEAR);
 
     const resultEntry = {
       title: songs[currentIndex].title,
@@ -40,50 +80,55 @@ function App() {
       actualYear,
       guessedYear: guess,
       songScore,
+      diff,
     };
 
-    setResults([...results, resultEntry]);
-    setScore(updatedScore);
+    setResults((prev) => [...prev, resultEntry]);
+    setScore((prev) => prev + songScore);
     setShowFeedback(true);
 
-    setTimeout(() => {
+    // Advance after short delay
+    timerRef.current = setTimeout(() => {
       setShowFeedback(false);
-      if (currentIndex === songs.length - 1) {
-        setGameOver(true);
-        if (updatedScore > bestScore) {
-          setBestScore(updatedScore);
-          localStorage.setItem("bestScore", updatedScore.toString());
+      setIsSubmitting(false);
+
+      setCurrentIndex((idx) => {
+        const last = idx === songs.length - 1;
+        if (last) {
+          setGameOver(true);
+          const finalScore = (prevScore) => prevScore + 0; // dummy to read latest
+          // We can't read prev here; instead compute final directly:
+          const updatedScore = (results.reduce((s, r) => s + r.songScore, 0) + songScore);
+          if (updatedScore > bestScore) {
+            setBestScore(updatedScore);
+            localStorage.setItem(STORAGE_KEY, String(updatedScore));
+          }
+          return idx; // stay on last
         }
-      } else {
-        setCurrentIndex(currentIndex + 1);
-      }
+        return idx + 1;
+      });
     }, 1500);
   };
 
   const handlePlayAgain = () => {
-    fetch("/songs.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const newSongs = data.sort(() => 0.5 - Math.random()).slice(0, 5);
-        setSongs(newSongs);
-        setCurrentIndex(0);
-        setGuess(1990);
-        setScore(0);
-        setGameOver(false);
-        setResults([]);
-        setShowFeedback(false);
-      });
+    if (timerRef.current) clearTimeout(timerRef.current);
+    loadSongs();
   };
 
-  const getScoreClass = (score) => {
-    if (score >= 900) return "score-good";
-    if (score >= 700) return "score-okay";
+  const getScoreClass = (s) => {
+    if (s >= 900) return "score-good";
+    if (s >= 700) return "score-okay";
     return "score-poor";
   };
 
+  const onKeyDown = (e) => {
+    if (e.key === "Enter" && !gameOver) handleSubmit();
+  };
+
   return (
-    <div className="App">
+    <div className="App" onKeyDown={onKeyDown}>
       <h1>ChartGuess 🎵</h1>
+
       {!gameOver && songs.length > 0 && (
         <div className="quiz-card">
           <img src={coverUrl} alt="Record cover" className="cover" />
@@ -94,41 +139,50 @@ function App() {
             </p>
           )}
 
-          <div className="year-thumb">Your guess: {guess}</div>
+          <label htmlFor="year-slider" className="visually-hidden">
+            Choose a year between {YEAR_MIN} and {YEAR_MAX}
+          </label>
+
+          <div className="year-thumb" aria-live="polite">
+            Your guess: {guess}
+          </div>
 
           <div className="range-wrapper">
             <input
+              id="year-slider"
               type="range"
-              min="1960"
-              max="2012"
+              min={YEAR_MIN}
+              max={YEAR_MAX}
               step="1"
               value={guess}
-              onChange={(e) => setGuess(parseInt(e.target.value))}
+              onChange={(e) => setGuess(parseInt(e.target.value, 10))}
               list="year-ticks"
+              disabled={isSubmitting}
             />
             <datalist id="year-ticks">
-              {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map(
-                (year) => (
-                  <option key={year} value={year} />
-                )
-              )}
+              {years.map((y) => (
+                <option key={y} value={y} />
+              ))}
             </datalist>
-            <div className="year-labels">
-              {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map(
-                (year) => (
-                  <div className="year-label" key={year}>
-                    {year % 10 === 0 ? year : "|"}
-                  </div>
-                )
-              )}
+
+            <div className="year-labels" aria-hidden="true">
+              {years.map((y) => (
+                <div className="year-label" key={y}>
+                  {y % 10 === 0 ? y : "|"}
+                </div>
+              ))}
             </div>
           </div>
 
-          <button onClick={handleSubmit}>Submit Guess</button>
+          <button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Checking…" : "Submit Guess"}
+          </button>
 
           {showFeedback && (
-            <div className="answer-feedback">
-              🎯 Correct year: <strong>{songs[currentIndex].year}</strong>
+            <div className="answer-feedback" aria-live="polite">
+              🎯 Correct year: <strong>{songs[currentIndex].year}</strong>{' '}
+              ({Math.abs(guess - parseInt(songs[currentIndex].year, 10))} year
+              {Math.abs(guess - parseInt(songs[currentIndex].year, 10)) === 1 ? "" : "s"} off)
             </div>
           )}
         </div>
@@ -151,17 +205,17 @@ function App() {
                   <th>🎵 Song</th>
                   <th>📅 Your Guess</th>
                   <th>✅ Actual</th>
+                  <th>↕︎ Diff</th>
                   <th>🏆 Score</th>
                 </tr>
               </thead>
               <tbody>
                 {results.map((r, index) => (
-                  <tr key={index}>
-                    <td>
-                      {r.title} – {r.artist}
-                    </td>
+                  <tr key={`${r.title}-${index}`}>
+                    <td>{r.title} – {r.artist}</td>
                     <td>{r.guessedYear}</td>
                     <td>{r.actualYear}</td>
+                    <td>{r.diff}</td>
                     <td className={getScoreClass(r.songScore)}>{r.songScore}</td>
                   </tr>
                 ))}
