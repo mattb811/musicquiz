@@ -74,9 +74,11 @@ function App() {
         <div className="quiz-card">
           <img src={coverUrl} alt="Record cover" className="cover" />
 
-          <p className="song-title">
-            {songs[currentIndex].title} – {songs[currentIndex].artist}
-          </p>
+          {songs[currentIndex] && (
+            <p className="song-title">
+              {songs[currentIndex].title} – {songs[currentIndex].artist}
+            </p>
+          )}
 
           <div className="year-thumb">Your guess: {guess}</div>
 
