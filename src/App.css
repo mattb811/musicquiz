@@ -1,13 +1,11 @@
 /* Reset & base styles */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: red; /* OBVIOUS BACKGROUND FOR DEBUG */
+  background-color: #f4f4f8;
   color: #333;
   margin: 0;
   padding: 0;
 }
-
-
 
 .App {
   max-width: 800px;
