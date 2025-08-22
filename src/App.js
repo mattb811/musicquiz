@@ -116,38 +116,40 @@ function App() {
           <p>Your score: <strong>{score}</strong></p>
           <p>Best score: <strong>{bestScore}</strong></p>
 
-          <table className="results-table">
-            <thead>
-              <tr>
-                <th>🎵 Song</th>
-                <th>Your Guess</th>
-                <th>Actual</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {guesses.map(({ song, guess, actual, roundScore }, index) => {
-                const difference = Math.abs(guess - actual);
-                let emoji = "❌";
-                if (difference <= 1) emoji = "🎯";
-                else if (difference <= 3) emoji = "👍";
-                else if (difference <= 5) emoji = "😬";
+          <div className="results-container">
+            <table className="results-table">
+              <thead>
+                <tr>
+                  <th>🎵 Song</th>
+                  <th>Your Guess</th>
+                  <th>Actual</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {guesses.map(({ song, guess, actual, roundScore }, index) => {
+                  const difference = Math.abs(guess - actual);
+                  let emoji = "❌";
+                  if (difference <= 1) emoji = "🎯";
+                  else if (difference <= 3) emoji = "👍";
+                  else if (difference <= 5) emoji = "😬";
 
-                let scoreClass = "score-poor";
-                if (roundScore > 800) scoreClass = "score-good";
-                else if (roundScore > 500) scoreClass = "score-okay";
+                  let scoreClass = "score-poor";
+                  if (roundScore > 800) scoreClass = "score-good";
+                  else if (roundScore > 500) scoreClass = "score-okay";
 
-                return (
-                  <tr key={index}>
-                    <td>{emoji} {song.title} – {song.artist}</td>
-                    <td>{guess}</td>
-                    <td>{actual}</td>
-                    <td className={scoreClass}>{roundScore}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={index}>
+                      <td>{emoji} {song.title} – {song.artist}</td>
+                      <td>{guess}</td>
+                      <td>{actual}</td>
+                      <td className={scoreClass}>{roundScore}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
           <button onClick={handleRestart}>Play Again</button>
           <button onClick={handleShare}>Share Score</button>

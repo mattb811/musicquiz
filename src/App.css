@@ -28,150 +28,104 @@ input[type="range"] {
   width: 100%;
   margin-top: 20px;
   -webkit-appearance: none;
-  height: 10px;
-  border-radius: 5px;
+  height: 14px;
+  border-radius: 7px;
   background: #d3d3d3;
   outline: none;
+  touch-action: pan-y;
 }
 
-.decade-labels {
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #fff;
+  margin-top: -9px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.year-thumb {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Decade labels */
+.decades {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-top: 10px;
+  margin-top: 8px;
   font-size: 14px;
-  color: #555;
+  padding: 0 5px;
 }
 
-.decade-labels span {
-  text-align: center;
+.decade-label {
   flex: 1;
-}
-/* Slider wrapper with 53 columns (one per year 1960–2012) */
-.slider-wrapper {
-  display: grid;
-  grid-template-columns: repeat(53, 1fr); /* 2012 - 1960 + 1 */
-  gap: 0;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.slider-wrapper .label {
   text-align: center;
-  font-size: 12px;
-  color: #555;
-}
-/* Year tick marks */
-.slider-wrapper {
-  display: grid;
-  grid-template-columns: repeat(53, 1fr); /* 1960 to 2012 */
-  gap: 0;
-  width: 100%;
-  margin-top: 10px;
 }
 
-.slider-wrapper .label {
-  text-align: center;
-  font-size: 12px;
-  color: #555;
-  position: relative;
-}
-
-.tick {
-  width: 1px;
-  height: 8px;
-  background: #333;
-  margin: 0 auto 2px auto;
-}
-
-/* Year label above slider thumb */
-.thumb-label {
-  position: absolute;
-  top: -30px;
-  transform: translateX(-50%);
-  background: #222;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-/* Game Over table */
-.table-wrapper {
-  overflow-x: auto;
-  margin-top: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
+.cover {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
   margin-bottom: 20px;
 }
 
-th,
-td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f8f8f8;
-  font-weight: bold;
-}
-
-/* Button styles */
 button {
-  background-color: #0077cc;
-  color: #fff;
+  margin: 10px 5px;
   padding: 10px 20px;
-  border: none;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-button:hover {
-  background-color: #005fa3;
-}
-button {
-  display: inline-block;
-  margin-top: 20px;
-}
-/* Score cell colouring */
-.score-perfect {
-  background-color: #d4edda;
-  color: #155724;
-  font-weight: bold;
-}
-
-.score-good {
-  background-color: #e6f4ea;
-  color: #2e7d32;
-}
-
-.score-mid {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.score-low {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-button {
-  margin: 10px;
-  padding: 10px 16px;
-  font-size: 16px;
-  border: none;
   background-color: #007bff;
   color: white;
-  border-radius: 6px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+.results-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 400px;
+}
+
+.results-table th,
+.results-table td {
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.results-table td.score-good {
+  background-color: #d4edda;
+}
+
+.results-table td.score-okay {
+  background-color: #fff3cd;
+}
+
+.results-table td.score-poor {
+  background-color: #f8d7da;
 }
