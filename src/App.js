@@ -290,7 +290,8 @@ function App() {
         <div
           key={y}
           className={`year-label${isDecade ? " decade" : ""}`}
-          style={{ "--pos": `${pos}%` }}
+          style={{ "--pos": pos }}   // number only, no "%"
+
         >
           {isDecade ? y : ""}
         </div>

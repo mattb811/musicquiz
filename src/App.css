@@ -269,6 +269,7 @@ button:disabled {
   font-size: 11px;
   line-height: 1;
   color: #555;
+  white-space: nowrap;          /* add this */
 }
 
 /* Small tick under every year label */
