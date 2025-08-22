@@ -165,20 +165,19 @@ button:disabled {
 }
 
 /* =========================
-   Range (Year slider) — precise alignment
+   Range (Year slider) — mobile-safe alignment
    ========================= */
 .range-shell {
-  --thumb: 26px;            /* keep in sync with the actual thumb size */
+  --thumb: 26px;               /* desktop thumb size */
   position: relative;
   width: 100%;
   margin-top: 10px;
-  padding: 0;               /* no extra padding; we compensate via margins */
 }
 
-/* Base track; inner width excludes half-thumb padding on both sides */
+/* Range track */
 .range-shell input[type="range"] {
-  width: calc(100% - var(--thumb));
-  margin: 0 calc(var(--thumb) / 2); /* aligns to label overlay */
+  width: calc(100% - var(--thumb));      /* inner width minus both thumbs */
+  margin: 0 calc(var(--thumb) / 2);      /* inset = half a thumb each side */
   -webkit-appearance: none;
   appearance: none;
   height: 8px;
@@ -206,14 +205,14 @@ button:disabled {
   background: var(--brand);
   border-radius: 50%;
   cursor: pointer;
-  margin-top: calc((8px - var(--thumb)) / 2); /* center on 8px track */
+  margin-top: calc((8px - var(--thumb)) / 2); /* center on track */
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.25);
   position: relative;
   z-index: 3;
 }
 
-/* Firefox */
+/* Thumb — Firefox */
 .range-shell input[type="range"]::-moz-range-thumb {
   height: var(--thumb);
   width: var(--thumb);
@@ -229,7 +228,7 @@ button:disabled {
   border-radius: 4px;
 }
 
-/* Year tick overlay (every year) — shares inner width with input */
+/* Subtle tick overlay (every year) */
 .range-track-overlay {
   position: absolute;
   left: calc(var(--thumb) / 2);
@@ -242,7 +241,7 @@ button:disabled {
     repeating-linear-gradient(
       to right,
       transparent 0,
-      transparent calc((100% - 0px) / 52 - 1px), /* 1960–2012 inclusive → 52 intervals */
+      transparent calc((100% - 0px) / 52 - 1px), /* 52 intervals from 1960–2012 */
       rgba(0,0,0,0.06) calc((100% - 0px) / 52 - 1px),
       rgba(0,0,0,0.06) calc((100% - 0px) / 52)
     );
@@ -250,49 +249,32 @@ button:disabled {
   z-index: 1;
 }
 
-/* Labels container: same inner width */
+/* Decade labels aligned with inner track width */
 .year-labels {
   display: flex;
   justify-content: space-between;
+  padding: 0 calc(var(--thumb) / 2);  /* match slider inset */
   margin-top: 6px;
   font-size: 11px;
   color: #555;
   user-select: none;
   pointer-events: none;
+  font-variant-numeric: tabular-nums;
 }
-
-/* Each label positioned by percentage; centered on its tick */
 .year-label {
   text-align: center;
   flex: 0 0 auto;
-  width: 1px;   /* makes spacing purely flex-based */
+  width: 1px;               /* spacing driven by flex, not text width */
   white-space: nowrap;
-}
-
-/* Small tick under every year label */
-.year-label::after {
-  content: "";
-  display: block;
-  width: 1px;
-  height: 6px;
-  background: #555;
-  margin: 2px auto 0;
-  opacity: 0.75;
-}
-
-/* Decade labels show the number and appear a tad bolder */
-.year-label.decade {
   font-weight: 600;
   color: #444;
 }
-.year-label.decade::after {
-  height: 8px; /* longer tick on decades */
+
+/* Larger thumb on small screens → labels auto-align */
+@media (max-width: 520px) {
+  .range-shell { --thumb: 30px; }
 }
 
-/* Larger thumb on small screens and update --thumb to keep alignment */
-@media (max-width: 520px) {
-  .range-shell { --thumb: 30px; } /* labels & margins auto-sync */
-}
 
 
 /* =========================
