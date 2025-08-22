@@ -95,13 +95,22 @@ function App() {
     type="range"
     min="1960"
     max="2012"
+    step="1"
     value={guess}
     onChange={(e) => setGuess(parseInt(e.target.value))}
+    list="year-ticks"
   />
-  <div className="decades">
-    {[1960, 1970, 1980, 1990, 2000, 2010, 2012].map((year) => (
-      <div className="decade-label" key={year}>
-        {year}
+
+  <datalist id="year-ticks">
+    {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map((year) => (
+      <option key={year} value={year} />
+    ))}
+  </datalist>
+
+  <div className="year-labels">
+    {Array.from({ length: 2013 - 1960 }, (_, i) => 1960 + i).map((year) => (
+      <div className="year-label" key={year}>
+        {year % 10 === 0 ? year : '|'}
       </div>
     ))}
   </div>
