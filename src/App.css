@@ -1,0 +1,177 @@
+/* Reset & base styles */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+/* Card-style container */
+.quiz-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+/* Slider styling */
+input[type="range"] {
+  width: 100%;
+  margin-top: 20px;
+  -webkit-appearance: none;
+  height: 10px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+}
+
+.decade-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.decade-labels span {
+  text-align: center;
+  flex: 1;
+}
+/* Slider wrapper with 53 columns (one per year 1960–2012) */
+.slider-wrapper {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr); /* 2012 - 1960 + 1 */
+  gap: 0;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.slider-wrapper .label {
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+}
+/* Year tick marks */
+.slider-wrapper {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr); /* 1960 to 2012 */
+  gap: 0;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.slider-wrapper .label {
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+  position: relative;
+}
+
+.tick {
+  width: 1px;
+  height: 8px;
+  background: #333;
+  margin: 0 auto 2px auto;
+}
+
+/* Year label above slider thumb */
+.thumb-label {
+  position: absolute;
+  top: -30px;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Game Over table */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+/* Button styles */
+button {
+  background-color: #0077cc;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+button {
+  display: inline-block;
+  margin-top: 20px;
+}
+/* Score cell colouring */
+.score-perfect {
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: bold;
+}
+
+.score-good {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+}
+
+.score-mid {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.score-low {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+button {
+  margin: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
