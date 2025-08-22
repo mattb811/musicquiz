@@ -90,21 +90,23 @@ function App() {
 
           <div className="year-thumb">Your guess: {guess}</div>
 
-          <input
-            type="range"
-            min="1960"
-            max="2012"
-            value={guess}
-            onChange={(e) => setGuess(parseInt(e.target.value))}
-          />
+          <div className="range-wrapper">
+  <input
+    type="range"
+    min="1960"
+    max="2012"
+    value={guess}
+    onChange={(e) => setGuess(parseInt(e.target.value))}
+  />
+  <div className="decades">
+    {[1960, 1970, 1980, 1990, 2000, 2010, 2012].map((year) => (
+      <div className="decade-label" key={year}>
+        {year}
+      </div>
+    ))}
+  </div>
+</div>
 
-          <div className="decades">
-            {[1960, 1970, 1980, 1990, 2000, 2010, 2012].map((year) => (
-              <div className="decade-label" key={year}>
-                {year}
-              </div>
-            ))}
-          </div>
 
           <button onClick={handleSubmit}>Submit Guess</button>
         </div>

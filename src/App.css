@@ -23,23 +23,26 @@ body {
   margin-top: 30px;
 }
 
-.song-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 20px 0 10px;
-  color: #333;
+/* Slider container */
+.range-wrapper {
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Slider styling */
 input[type="range"] {
   width: 100%;
-  margin-top: 20px;
+  margin: 0;
   -webkit-appearance: none;
   height: 14px;
   border-radius: 7px;
   background: #d3d3d3;
   outline: none;
   touch-action: pan-y;
+  position: relative;
+  z-index: 2;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -53,6 +56,8 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   border: 2px solid #fff;
   margin-top: -9px;
+  z-index: 3;
+  position: relative;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -62,6 +67,18 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid #fff;
+}
+
+/* Tick marks */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 14px;
+  background: repeating-linear-gradient(
+    to right,
+    #ccc,
+    #ccc 1px,
+    #d3d3d3 1px,
+    #d3d3d3 calc((100% - 1px) / 52)
+  );
 }
 
 .year-thumb {
@@ -75,9 +92,10 @@ input[type="range"]::-moz-range-thumb {
 .decades {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 14px;
-  padding: 0 5px;
+  padding: 0 8px;
+  box-sizing: border-box;
 }
 
 .decade-label {
@@ -90,6 +108,13 @@ input[type="range"]::-moz-range-thumb {
   height: auto;
   border-radius: 8px;
   margin-bottom: 20px;
+}
+
+.song-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 20px 0 10px;
+  color: #333;
 }
 
 button {
@@ -136,3 +161,12 @@ button:hover {
 .results-table td.score-poor {
   background-color: #f8d7da;
 }
+
+.ethical-ad-container {
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
