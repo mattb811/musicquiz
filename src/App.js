@@ -23,14 +23,18 @@ const coverCache = new Map();
       const obj = JSON.parse(raw);
       Object.entries(obj).forEach(([k, v]) => coverCache.set(k, v));
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 })();
 function persistCoverCache() {
   const obj = {};
   coverCache.forEach((v, k) => (obj[k] = v));
   try {
     localStorage.setItem(COVER_CACHE_KEY, JSON.stringify(obj));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 async function fetchCoverAndPreview({ title, artist }) {
@@ -147,7 +151,6 @@ function App() {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update cover + preview for current song
@@ -192,7 +195,9 @@ function App() {
     try {
       const audio = document.querySelector("audio.preview-audio");
       if (audio) audio.pause();
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     // Advance after a short delay
     timerRef.current = setTimeout(() => {
@@ -233,4 +238,121 @@ function App() {
       <h1>ChartGuess 🎵</h1>
 
       {!gameOver && songs.length > 0 && (
+        <div className="quiz-card">
+          <img src={coverUrl} alt="Record cover" className="cover" />
 
+          {songs[currentIndex] && (
+            <p className="song-title">
+              {songs[currentIndex].title} – {songs[currentIndex].artist}
+            </p>
+          )}
+
+          {previewUrl && (
+            <audio
+              controls
+              preload="none"
+              src={previewUrl}
+              className="preview-audio"
+              style={{ marginTop: 8, width: "100%" }}
+            />
+          )}
+          <div style={{ fontSize: 10, opacity: 0.7, marginTop: 4 }}>
+            {previewUrl || coverUrl !== "/records.jpg"
+              ? "Cover/preview via iTunes/Apple Music"
+              : "\u00A0"}
+          </div>
+
+          <label htmlFor="year-slider" className="visually-hidden">
+            Choose a year between {YEAR_MIN} and {YEAR_MAX}
+          </label>
+
+          <div className="year-thumb" aria-live="polite">
+            Your guess: {guess}
+          </div>
+
+          <div className="range-wrapper">
+            <input
+              id="year-slider"
+              type="range"
+              min={YEAR_MIN}
+              max={YEAR_MAX}
+              step="1"
+              value={guess}
+              onChange={(e) => setGuess(parseInt(e.target.value, 10))}
+              list="year-ticks"
+              disabled={isSubmitting}
+            />
+            <datalist id="year-ticks">
+              {years.map((y) => (
+                <option key={y} value={y} />
+              ))}
+            </datalist>
+
+            <div className="year-labels" aria-hidden="true">
+              {years.map((y) => (
+                <div className="year-label" key={y}>
+                  {y % 10 === 0 ? y : "|"}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Checking…" : "Submit Guess"}
+          </button>
+
+          {showFeedback && (
+            <div className="answer-feedback" aria-live="polite">
+              🎯 Correct year: <strong>{songs[currentIndex].year}</strong>{" "}
+              ({Math.abs(guess - parseInt(songs[currentIndex].year, 10))} year
+              {Math.abs(guess - parseInt(songs[currentIndex].year, 10)) === 1 ? "" : "s"} off)
+            </div>
+          )}
+        </div>
+      )}
+
+      {gameOver && (
+        <div className="quiz-card">
+          <h2>Game Over!</h2>
+          <p>
+            Your score: <strong>{score}</strong>
+          </p>
+          <p>
+            Best score: <strong>{bestScore}</strong>
+          </p>
+
+          <div className="results-container">
+            <table className="results-table">
+              <thead>
+                <tr>
+                  <th>🎵 Song</th>
+                  <th>📅 Your Guess</th>
+                  <th>✅ Actual</th>
+                  <th>↕︎ Diff</th>
+                  <th>🏆 Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((r, index) => (
+                  <tr key={`${r.title}-${index}`}>
+                    <td>
+                      {r.title} – {r.artist}
+                    </td>
+                    <td>{r.guessedYear}</td>
+                    <td>{r.actualYear}</td>
+                    <td>{r.diff}</td>
+                    <td className={getScoreClass(r.songScore)}>{r.songScore}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <button onClick={handlePlayAgain}>Play Again</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
